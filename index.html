@@ -90,6 +90,45 @@
                                 <span data-i18n="save">Save</span>
                             </button>
                         </div>
+
+                        <!-- Recording Section -->
+                        <div class="recording-section" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e1e8ed;">
+                            <h3 style="margin-bottom: 1rem; color: #333;">
+                                <span data-i18n="recording">🎙️ Recording & Transcription</span>
+                            </h3>
+
+                            <div class="recording-controls" style="margin-bottom: 1.5rem;">
+                                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                                    <button class="btn btn-primary" id="startRecordingBtn" style="background: #ef4444;">
+                                        <span>🔴 <span data-i18n="startRecording">Start Recording</span></span>
+                                    </button>
+                                    <button class="btn btn-secondary" id="stopRecordingBtn" style="display: none;">
+                                        <span>⏹️ <span data-i18n="stopRecording">Stop Recording</span></span>
+                                    </button>
+                                    <span id="recordingTime" style="font-weight: 600; color: #667eea; min-width: 60px;"></span>
+                                </div>
+                                <div id="recordingStatus" style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                                    <span data-i18n="recordingStatus">No recording</span>
+                                </div>
+                            </div>
+
+                            <div class="transcription-controls" style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 4px;">
+                                <button class="btn btn-primary" id="transcribeBtn" style="display: none;">
+                                    <span>📝 <span data-i18n="transcribe">Transcribe</span></span>
+                                </button>
+                                <div id="transcriptionStatus" style="font-size: 0.9rem; color: #666; margin-top: 0.5rem; display: none;">
+                                    <span data-i18n="transcribing">Transcribing...</span>
+                                </div>
+                            </div>
+
+                            <div id="transcriptionResults" style="margin-top: 1rem; padding: 1rem; background: white; border: 1px solid #e1e8ed; border-radius: 4px; display: none;">
+                                <h4 style="margin-bottom: 0.75rem; color: #333;" data-i18n="transcriptionResults">Transcription Results</h4>
+                                <div id="transcriptionText" style="color: #555; line-height: 1.6; white-space: pre-wrap; word-break: break-word;"></div>
+                                <button class="btn btn-secondary" id="clearTranscriptionBtn" style="margin-top: 1rem;">
+                                    <span data-i18n="clear">Clear</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Conversations Section -->

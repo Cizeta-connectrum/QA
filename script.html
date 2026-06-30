@@ -42,6 +42,16 @@ const translations = {
     successMeetingCreated: '会議が作成されました',
     successNoteSaved: '議事録が保存されました',
     successConversationAdded: '会話が追加されました',
+    recording: '🎙️ 録音・文字起こし',
+    startRecording: '録音を開始',
+    stopRecording: '録音を停止',
+    recordingStatus: '録音なし',
+    transcribe: '文字起こし',
+    transcribing: '文字起こし中...',
+    transcriptionResults: '文字起こし結果',
+    clear: 'クリア',
+    recordingError: '録音に失敗しました',
+    transcriptionError: '文字起こしに失敗しました',
   },
   en: {
     meetings: 'Meetings',
@@ -84,12 +94,29 @@ const translations = {
     successMeetingCreated: 'Meeting created successfully',
     successNoteSaved: 'Notes saved successfully',
     successConversationAdded: 'Conversation added successfully',
+    recording: '🎙️ Recording & Transcription',
+    startRecording: 'Start Recording',
+    stopRecording: 'Stop Recording',
+    recordingStatus: 'No recording',
+    transcribe: 'Transcribe',
+    transcribing: 'Transcribing...',
+    transcriptionResults: 'Transcription Results',
+    clear: 'Clear',
+    recordingError: 'Failed to record',
+    transcriptionError: 'Failed to transcribe',
   }
 };
 
 let currentLanguage = localStorage.getItem('language') || 'ja';
 let currentMeetingId = null;
 let likedConversations = new Set(JSON.parse(localStorage.getItem('likedConversations') || '[]'));
+
+// Recording variables
+let mediaRecorder;
+let recordedChunks = [];
+let isRecording = false;
+let recordingStartTime = null;
+let recordingInterval = null;
 
 // Initialize i18n
 function updateLanguage(lang) {
@@ -162,6 +189,12 @@ function initializeApp() {
   document.getElementById('searchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') performSearch();
   });
+
+  // Recording
+  document.getElementById('startRecordingBtn').addEventListener('click', startRecording);
+  document.getElementById('stopRecordingBtn').addEventListener('click', stopRecording);
+  document.getElementById('transcribeBtn').addEventListener('click', transcribeRecording);
+  document.getElementById('clearTranscriptionBtn').addEventListener('click', clearTranscription);
 
   // Load initial data
   loadMeetings();
@@ -404,6 +437,106 @@ function showNotification(message) {
   document.body.appendChild(notification);
 
   setTimeout(() => notification.remove(), 3000);
+}
+
+// Recording functions
+function startRecording() {
+  recordedChunks = [];
+
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.start();
+      isRecording = true;
+      recordingStartTime = Date.now();
+
+      // Update UI
+      document.getElementById('startRecordingBtn').style.display = 'none';
+      document.getElementById('stopRecordingBtn').style.display = 'inline-flex';
+      document.getElementById('recordingStatus').textContent = translations[currentLanguage].recordingStatus + ' (recording...)';
+      document.getElementById('transcribeBtn').style.display = 'none';
+      document.getElementById('transcriptionResults').style.display = 'none';
+
+      // Update recording time
+      recordingInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('recordingTime').textContent =
+          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    })
+    .catch(err => {
+      showNotification(translations[currentLanguage].recordingError);
+      console.error('Recording error:', err);
+    });
+}
+
+function stopRecording() {
+  if (mediaRecorder && isRecording) {
+    mediaRecorder.stop();
+    isRecording = false;
+    clearInterval(recordingInterval);
+
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
+
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Audio = reader.result.split(',')[1];
+
+        // Save recording to backend
+        google.script.run.withSuccessHandler((recordingId) => {
+          document.getElementById('stopRecordingBtn').style.display = 'none';
+          document.getElementById('startRecordingBtn').style.display = 'inline-flex';
+          document.getElementById('recordingStatus').textContent =
+            translations[currentLanguage].recordingStatus + ' (ready to transcribe)';
+          document.getElementById('transcribeBtn').style.display = 'inline-flex';
+          document.getElementById('recordingTime').textContent = '';
+
+          showNotification('Recording saved successfully');
+        }).saveRecording(currentMeetingId, base64Audio, duration);
+      };
+      reader.readAsDataURL(audioBlob);
+
+      // Stop all tracks
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    };
+  }
+}
+
+function transcribeRecording() {
+  const transcriptionStatus = document.getElementById('transcriptionStatus');
+  transcriptionStatus.style.display = 'block';
+
+  google.script.run.withSuccessHandler((result) => {
+    transcriptionStatus.style.display = 'none';
+
+    if (result && result.transcript) {
+      document.getElementById('transcriptionText').textContent = result.transcript;
+      document.getElementById('transcriptionResults').style.display = 'block';
+      showNotification('Transcription completed');
+    } else {
+      showNotification(translations[currentLanguage].transcriptionError);
+    }
+  }).withFailureHandler((error) => {
+    transcriptionStatus.style.display = 'none';
+    showNotification(translations[currentLanguage].transcriptionError);
+    console.error('Transcription error:', error);
+  }).transcribeLatestRecording(currentMeetingId);
+}
+
+function clearTranscription() {
+  document.getElementById('transcriptionResults').style.display = 'none';
+  document.getElementById('transcriptionText').textContent = '';
 }
 
 // Add slide-in animation

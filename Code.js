@@ -237,6 +237,39 @@ function likeConversation(conversationId) {
   }
 }
 
+// Transcribe the latest recording for a meeting
+function transcribeLatestRecording(meetingId) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const recordingSheet = ss.getSheetByName(SHEET_NAMES.RECORDINGS);
+
+  if (!recordingSheet) return null;
+
+  const lastRow = recordingSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? recordingSheet.getRange(2, 1, rowCount, 7).getValues() : [];
+
+  // Find the latest recording for this meeting
+  const meetingRecordings = data.filter(row => row[1] === meetingId);
+  if (meetingRecordings.length === 0) return null;
+
+  const latestRecording = meetingRecordings[meetingRecordings.length - 1];
+  const fileId = latestRecording[5]; // File ID is in column 6
+
+  if (!fileId) return null;
+
+  // Transcribe the audio
+  const transcript = transcribeAudio(fileId);
+
+  // Update the recording sheet with transcript
+  const recordingIndex = data.findIndex(row => row[5] === fileId);
+  if (recordingIndex !== -1) {
+    recordingSheet.getRange(recordingIndex + 2, 3).setValue(transcript);
+    recordingSheet.getRange(recordingIndex + 2, 7).setValue('Transcribed');
+  }
+
+  return { transcript: transcript, fileId: fileId };
+}
+
 // Include helper to load HTML/CSS files
 function include(filename) {
   return HtmlService.createHtmlOutput(HtmlService.createTemplateFromFile(filename).evaluate().getContent());
