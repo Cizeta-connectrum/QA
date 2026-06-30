@@ -1,0 +1,424 @@
+<script>
+// Multi-language support
+const translations = {
+  ja: {
+    meetings: '会議',
+    search: '検索',
+    settings: '設定',
+    newMeeting: '+ 新しい会議',
+    loading: '読み込み中...',
+    back: '戻る',
+    date: '日付',
+    participants: '参加者',
+    description: '説明',
+    notes: '議事録',
+    save: '保存',
+    all: 'すべて',
+    questions: '質問',
+    comments: 'コメント',
+    question: '質問',
+    comment: 'コメント',
+    note: 'メモ',
+    submit: '送信',
+    type: 'タイプ',
+    language: '言語',
+    timezone: 'タイムゾーン',
+    cancel: 'キャンセル',
+    create: '作成',
+    title: 'タイトル',
+    time: '時間',
+    author: '著者',
+    like: 'いいね',
+    likes: 'いいね: ',
+    noMeetings: '会議がまだありません',
+    noConversations: '会話がまだありません',
+    searchPlaceholder: '検索キーワードを入力...',
+    participantsPlaceholder: '参加者を入力（カンマ区切り）',
+    descriptionPlaceholder: '会議の説明を入力...',
+    notesPlaceholder: '議事録を入力...',
+    conversationPlaceholder: 'メモ、質問、またはコメントを入力...',
+    errorCreatingMeeting: '会議の作成に失敗しました',
+    errorLoadingMeetings: '会議の読み込みに失敗しました',
+    successMeetingCreated: '会議が作成されました',
+    successNoteSaved: '議事録が保存されました',
+    successConversationAdded: '会話が追加されました',
+  },
+  en: {
+    meetings: 'Meetings',
+    search: 'Search',
+    settings: 'Settings',
+    newMeeting: '+ New Meeting',
+    loading: 'Loading...',
+    back: 'Back',
+    date: 'Date',
+    participants: 'Participants',
+    description: 'Description',
+    notes: 'Meeting Notes',
+    save: 'Save',
+    all: 'All',
+    questions: 'Questions',
+    comments: 'Comments',
+    question: 'Question',
+    comment: 'Comment',
+    note: 'Note',
+    submit: 'Submit',
+    type: 'Type',
+    language: 'Language',
+    timezone: 'Timezone',
+    cancel: 'Cancel',
+    create: 'Create',
+    title: 'Title',
+    time: 'Time',
+    author: 'Author',
+    like: 'Like',
+    likes: 'Likes: ',
+    noMeetings: 'No meetings yet',
+    noConversations: 'No conversations yet',
+    searchPlaceholder: 'Enter search keyword...',
+    participantsPlaceholder: 'Enter participants (comma-separated)',
+    descriptionPlaceholder: 'Enter meeting description...',
+    notesPlaceholder: 'Enter meeting notes...',
+    conversationPlaceholder: 'Enter note, question, or comment...',
+    errorCreatingMeeting: 'Failed to create meeting',
+    errorLoadingMeetings: 'Failed to load meetings',
+    successMeetingCreated: 'Meeting created successfully',
+    successNoteSaved: 'Notes saved successfully',
+    successConversationAdded: 'Conversation added successfully',
+  }
+};
+
+let currentLanguage = localStorage.getItem('language') || 'ja';
+let currentMeetingId = null;
+let likedConversations = new Set(JSON.parse(localStorage.getItem('likedConversations') || '[]'));
+
+// Initialize i18n
+function updateLanguage(lang) {
+  currentLanguage = lang;
+  localStorage.setItem('language', lang);
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = translations[lang][key] || key;
+  });
+
+  document.querySelectorAll('[placeholder]').forEach(el => {
+    const key = el.getAttribute('placeholder');
+    const translationKey = key.toLowerCase().replace(/ /g, '');
+    if (translations[lang][translationKey]) {
+      el.setAttribute('placeholder', translations[lang][translationKey]);
+    }
+  });
+}
+
+// Initialize event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  initializeApp();
+});
+
+function initializeApp() {
+  updateLanguage(currentLanguage);
+
+  // Set initial language select value
+  const langSelect = document.getElementById('languageSelect');
+  if (langSelect) langSelect.value = currentLanguage;
+  const settingsLang = document.getElementById('settingsLanguage');
+  if (settingsLang) settingsLang.value = currentLanguage;
+
+  // Event listeners
+  document.getElementById('languageSelect').addEventListener('change', (e) => {
+    updateLanguage(e.target.value);
+  });
+
+  document.getElementById('settingsLanguage').addEventListener('change', (e) => {
+    updateLanguage(e.target.value);
+  });
+
+  // Navigation
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.addEventListener('click', () => navigateToSection(btn.getAttribute('data-section')));
+  });
+
+  // Meetings
+  document.getElementById('createMeetingBtn').addEventListener('click', showCreateMeetingModal);
+  document.getElementById('confirmMeetingBtn').addEventListener('click', createMeeting);
+  document.getElementById('cancelMeetingBtn').addEventListener('click', closeCreateMeetingModal);
+  document.querySelector('.close-btn').addEventListener('click', closeCreateMeetingModal);
+
+  // Back button
+  document.getElementById('backBtn').addEventListener('click', backToMeetings);
+
+  // Meeting detail
+  document.getElementById('saveNotesBtn').addEventListener('click', saveMeetingNotes);
+  document.getElementById('submitConvBtn').addEventListener('click', submitConversation);
+
+  // Conversation tabs
+  document.querySelectorAll('.tab-button').forEach(btn => {
+    btn.addEventListener('click', () => filterConversations(btn.getAttribute('data-tab')));
+  });
+
+  // Search
+  document.getElementById('searchBtn').addEventListener('click', performSearch);
+  document.getElementById('searchInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') performSearch();
+  });
+
+  // Load initial data
+  loadMeetings();
+}
+
+// Navigation functions
+function navigateToSection(section) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(section + '-section').classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  event.target.closest('.nav-item')?.classList.add('active');
+}
+
+function backToMeetings() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('meetings-section').classList.add('active');
+  currentMeetingId = null;
+}
+
+// Create meeting modal
+function showCreateMeetingModal() {
+  document.getElementById('createMeetingModal').style.display = 'flex';
+}
+
+function closeCreateMeetingModal() {
+  document.getElementById('createMeetingModal').style.display = 'none';
+  document.getElementById('meetingTitleInput').value = '';
+  document.getElementById('meetingDateInput').value = '';
+  document.getElementById('meetingDescriptionInput').value = '';
+  document.getElementById('meetingParticipantsInput').value = '';
+}
+
+// Create meeting
+function createMeeting() {
+  const title = document.getElementById('meetingTitleInput').value.trim();
+  const date = document.getElementById('meetingDateInput').value;
+  const description = document.getElementById('meetingDescriptionInput').value.trim();
+  const participants = document.getElementById('meetingParticipantsInput').value.trim();
+
+  if (!title || !date) {
+    alert(translations[currentLanguage].errorCreatingMeeting);
+    return;
+  }
+
+  google.script.run.withSuccessHandler((id) => {
+    showNotification(translations[currentLanguage].successMeetingCreated);
+    closeCreateMeetingModal();
+    loadMeetings();
+  }).createMeeting(title, description, participants);
+}
+
+// Load meetings
+function loadMeetings() {
+  google.script.run.withSuccessHandler((meetings) => {
+    const list = document.getElementById('meetingsList');
+
+    if (!meetings || meetings.length === 0) {
+      list.innerHTML = `<p>${translations[currentLanguage].noMeetings}</p>`;
+      return;
+    }
+
+    list.innerHTML = meetings.map(meeting => `
+      <div class="meeting-card" onclick="openMeeting('${meeting.id}')">
+        <h3>${escapeHtml(meeting.title)}</h3>
+        <p class="meeting-card-date">${formatDate(meeting.date)}</p>
+        <p class="meeting-card-desc">${escapeHtml(meeting.description || '')}</p>
+        <div class="meeting-card-meta">
+          <span>${meeting.createdBy}</span>
+        </div>
+      </div>
+    `).join('');
+  }).getMeetings();
+}
+
+// Open meeting detail
+function openMeeting(meetingId) {
+  currentMeetingId = meetingId;
+
+  google.script.run.withSuccessHandler((meeting) => {
+    if (!meeting) return;
+
+    document.getElementById('meetingTitle').textContent = meeting.title;
+    document.getElementById('meetingDate').textContent = formatDate(meeting.date);
+    document.getElementById('meetingParticipants').textContent = meeting.participants || 'N/A';
+    document.getElementById('meetingDescription').textContent = meeting.description || 'N/A';
+    document.getElementById('meetingNotes').value = meeting.notes || '';
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('meeting-detail-section').classList.add('active');
+
+    loadConversations();
+  }).getMeetingById(meetingId);
+}
+
+// Save meeting notes
+function saveMeetingNotes() {
+  if (!currentMeetingId) return;
+
+  const notes = document.getElementById('meetingNotes').value;
+  google.script.run.withSuccessHandler(() => {
+    showNotification(translations[currentLanguage].successNoteSaved);
+  }).updateMeetingNotes(currentMeetingId, notes);
+}
+
+// Conversations
+function submitConversation() {
+  if (!currentMeetingId) return;
+
+  const content = document.getElementById('conversationInput').value.trim();
+  const type = document.getElementById('conversationType').value;
+
+  if (!content) return;
+
+  google.script.run.withSuccessHandler(() => {
+    showNotification(translations[currentLanguage].successConversationAdded);
+    document.getElementById('conversationInput').value = '';
+    loadConversations();
+  }).addConversation(currentMeetingId, type, content);
+}
+
+// Load conversations
+function loadConversations(filterType = 'all') {
+  google.script.run.withSuccessHandler((conversations) => {
+    const list = document.getElementById('conversationsList');
+
+    const filtered = filterType === 'all'
+      ? conversations
+      : conversations.filter(c => c.type === filterType);
+
+    if (!filtered || filtered.length === 0) {
+      list.innerHTML = `<p>${translations[currentLanguage].noConversations}</p>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(conv => `
+      <div class="conversation-item ${conv.type}">
+        <div class="conversation-header">
+          <div class="conversation-meta">
+            <span class="conversation-type ${conv.type}">${conv.type.toUpperCase()}</span>
+            <span class="conversation-author">${escapeHtml(conv.author)}</span>
+            <span class="conversation-time">${formatTime(conv.timestamp)}</span>
+          </div>
+        </div>
+        <div class="conversation-content">${escapeHtml(conv.content)}</div>
+        <div class="conversation-actions">
+          <button class="like-btn ${likedConversations.has(conv.id) ? 'liked' : ''}" onclick="likeConversation('${conv.id}')">
+            ❤️ <span class="like-count">${conv.likes || 0}</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }).getConversationsByMeetingId(currentMeetingId);
+}
+
+// Filter conversations by type
+function filterConversations(type) {
+  document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  loadConversations(type);
+}
+
+// Like conversation
+function likeConversation(conversationId) {
+  google.script.run.withSuccessHandler(() => {
+    likedConversations.add(conversationId);
+    localStorage.setItem('likedConversations', JSON.stringify([...likedConversations]));
+    loadConversations();
+  }).likeConversation(conversationId);
+}
+
+// Search
+function performSearch() {
+  const searchTerm = document.getElementById('searchInput').value.trim();
+  const searchType = document.getElementById('searchType').value;
+
+  if (!searchTerm) return;
+
+  google.script.run.withSuccessHandler((results) => {
+    const resultsDiv = document.getElementById('searchResults');
+
+    if (!results || results.length === 0) {
+      resultsDiv.innerHTML = `<p>${translations[currentLanguage].noConversations}</p>`;
+      return;
+    }
+
+    resultsDiv.innerHTML = results.map(result => `
+      <div class="search-result-item">
+        <p><strong>${translations[currentLanguage].type}:</strong> ${result.type}</p>
+        <p><strong>${translations[currentLanguage].author}:</strong> ${escapeHtml(result.author)}</p>
+        <p><strong>${translations[currentLanguage].content}:</strong> ${escapeHtml(result.content)}</p>
+        <p><strong>${translations[currentLanguage].time}:</strong> ${formatTime(result.timestamp)}</p>
+      </div>
+    `).join('');
+  }).searchConversations(searchTerm, searchType || null);
+}
+
+// Utility functions
+function formatDate(dateStr) {
+  if (!dateStr) return 'N/A';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(currentLanguage === 'ja' ? 'ja-JP' : 'en-US');
+}
+
+function formatTime(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diff = now - date;
+
+  if (diff < 60000) return translations[currentLanguage].just_now || 'Just now';
+  if (diff < 3600000) return Math.floor(diff / 60000) + 'm';
+  if (diff < 86400000) return Math.floor(diff / 3600000) + 'h';
+  if (diff < 604800000) return Math.floor(diff / 86400000) + 'd';
+
+  return date.toLocaleDateString(currentLanguage === 'ja' ? 'ja-JP' : 'en-US');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function showNotification(message) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #10b981;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    animation: slideIn 0.3s ease;
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => notification.remove(), 3000);
+}
+
+// Add slide-in animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+`;
+document.head.appendChild(style);
+</script>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConversationQA</title>
+    <?!= include('styles'); ?>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">ConversationQA</h1>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name"><?= userName ?></span>
+                        <select id="languageSelect" class="language-select">
+                            <option value="ja">日本語</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <button class="nav-item active" data-section="meetings">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-label" data-i18n="meetings">Meetings</span>
+                    </button>
+                    <button class="nav-item" data-section="search">
+                        <span class="nav-icon">🔍</span>
+                        <span class="nav-label" data-i18n="search">Search</span>
+                    </button>
+                    <button class="nav-item" data-section="settings">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-label" data-i18n="settings">Settings</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <!-- Meetings Section -->
+                <section id="meetings-section" class="section active">
+                    <div class="section-header">
+                        <h2 data-i18n="meetings">Meetings</h2>
+                        <button class="btn btn-primary" id="createMeetingBtn">
+                            <span data-i18n="newMeeting">+ New Meeting</span>
+                        </button>
+                    </div>
+
+                    <div id="meetingsList" class="meetings-list">
+                        <p data-i18n="loading">Loading...</p>
+                    </div>
+                </section>
+
+                <!-- Meeting Detail Section -->
+                <section id="meeting-detail-section" class="section" style="display: none;">
+                    <div class="section-header">
+                        <button class="btn btn-back" id="backBtn">&larr; <span data-i18n="back">Back</span></button>
+                        <h2 id="meetingTitle"></h2>
+                    </div>
+
+                    <div class="meeting-detail-container">
+                        <div class="meeting-info">
+                            <div class="info-block">
+                                <label data-i18n="date">Date:</label>
+                                <p id="meetingDate"></p>
+                            </div>
+                            <div class="info-block">
+                                <label data-i18n="participants">Participants:</label>
+                                <p id="meetingParticipants"></p>
+                            </div>
+                            <div class="info-block">
+                                <label data-i18n="description">Description:</label>
+                                <p id="meetingDescription"></p>
+                            </div>
+                        </div>
+
+                        <div class="meeting-notes-section">
+                            <h3 data-i18n="notes">Meeting Notes</h3>
+                            <textarea id="meetingNotes" placeholder="" class="notes-textarea"></textarea>
+                            <button class="btn btn-primary" id="saveNotesBtn">
+                                <span data-i18n="save">Save</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Conversations Section -->
+                    <div class="conversations-section">
+                        <div class="conversation-tabs">
+                            <button class="tab-button active" data-tab="all" data-i18n="all">All</button>
+                            <button class="tab-button" data-tab="notes" data-i18n="notes">Notes</button>
+                            <button class="tab-button" data-tab="questions" data-i18n="questions">Questions</button>
+                            <button class="tab-button" data-tab="comments" data-i18n="comments">Comments</button>
+                        </div>
+
+                        <div class="conversation-input">
+                            <textarea id="conversationInput" placeholder="" class="input-textarea"></textarea>
+                            <div class="input-actions">
+                                <select id="conversationType" class="type-select">
+                                    <option value="note" data-i18n="note">Note</option>
+                                    <option value="question" data-i18n="question">Question</option>
+                                    <option value="comment" data-i18n="comment">Comment</option>
+                                </select>
+                                <button class="btn btn-primary" id="submitConvBtn">
+                                    <span data-i18n="submit">Submit</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="conversationsList" class="conversations-list">
+                            <p data-i18n="loading">Loading...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Search Section -->
+                <section id="search-section" class="section" style="display: none;">
+                    <h2 data-i18n="search">Search</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="" class="search-input">
+                        <button class="btn btn-primary" id="searchBtn">
+                            <span data-i18n="search">Search</span>
+                        </button>
+                    </div>
+                    <div class="search-filters">
+                        <label data-i18n="type">Type:</label>
+                        <select id="searchType">
+                            <option value="" data-i18n="all">All</option>
+                            <option value="note" data-i18n="note">Note</option>
+                            <option value="question" data-i18n="question">Question</option>
+                            <option value="comment" data-i18n="comment">Comment</option>
+                        </select>
+                    </div>
+                    <div id="searchResults" class="search-results">
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings-section" class="section" style="display: none;">
+                    <h2 data-i18n="settings">Settings</h2>
+                    <div class="settings-container">
+                        <div class="setting-item">
+                            <label data-i18n="language">Language:</label>
+                            <select id="settingsLanguage">
+                                <option value="ja">日本語</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label data-i18n="timezone">Timezone:</label>
+                            <select id="settingsTimezone">
+                                <option value="Asia/Tokyo">Asia/Tokyo</option>
+                                <option value="UTC">UTC</option>
+                                <option value="America/New_York">America/New_York</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for creating meeting -->
+    <div id="createMeetingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="newMeeting">New Meeting</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label data-i18n="title">Title:</label>
+                    <input type="text" id="meetingTitleInput" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="date">Date:</label>
+                    <input type="date" id="meetingDateInput" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="description">Description:</label>
+                    <textarea id="meetingDescriptionInput" class="form-textarea"></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="participants">Participants:</label>
+                    <input type="text" id="meetingParticipantsInput" class="form-input" placeholder="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelMeetingBtn" data-i18n="cancel">Cancel</button>
+                <button class="btn btn-primary" id="confirmMeetingBtn" data-i18n="create">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <?!= include('script'); ?>
+</body>
+</html>
