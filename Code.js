@@ -61,7 +61,9 @@ function doGet(e) {
 // Register user if they're new to the system
 function registerUserIfNew(email) {
   const userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAMES.USERS);
-  const data = userSheet.getRange(2, 1, userSheet.getLastRow() - 1, 5).getValues();
+  const lastRow = userSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? userSheet.getRange(2, 1, rowCount, 5).getValues() : [];
 
   const existingUser = data.find(row => row[0] === email);
   if (!existingUser) {
@@ -73,7 +75,9 @@ function registerUserIfNew(email) {
 // Get user's display name
 function getUserName(email) {
   const userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAMES.USERS);
-  const data = userSheet.getRange(2, 1, userSheet.getLastRow() - 1, 5).getValues();
+  const lastRow = userSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? userSheet.getRange(2, 1, rowCount, 5).getValues() : [];
 
   const user = data.find(row => row[0] === email);
   return user ? user[1] : 'Unknown User';
@@ -107,7 +111,9 @@ function createMeeting(title, description, participants) {
 function getMeetings() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const meetingSheet = ss.getSheetByName(SHEET_NAMES.MEETINGS);
-  const data = meetingSheet.getRange(2, 1, meetingSheet.getLastRow() - 1, 10).getValues();
+  const lastRow = meetingSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? meetingSheet.getRange(2, 1, rowCount, 10).getValues() : [];
 
   return data.map(row => ({
     id: row[0],
@@ -156,7 +162,9 @@ function addConversation(meetingId, type, content) {
 function getConversationsByMeetingId(meetingId) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const convSheet = ss.getSheetByName(SHEET_NAMES.CONVERSATIONS);
-  const data = convSheet.getRange(2, 1, convSheet.getLastRow() - 1, 8).getValues();
+  const lastRow = convSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? convSheet.getRange(2, 1, rowCount, 8).getValues() : [];
 
   return data
     .filter(row => row[1] === meetingId)
@@ -177,7 +185,9 @@ function getConversationsByMeetingId(meetingId) {
 function updateMeetingNotes(meetingId, notes) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const meetingSheet = ss.getSheetByName(SHEET_NAMES.MEETINGS);
-  const data = meetingSheet.getRange(2, 1, meetingSheet.getLastRow() - 1, 10).getValues();
+  const lastRow = meetingSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? meetingSheet.getRange(2, 1, rowCount, 10).getValues() : [];
 
   const rowIndex = data.findIndex(row => row[0] === meetingId);
   if (rowIndex !== -1) {
@@ -190,7 +200,9 @@ function updateMeetingNotes(meetingId, notes) {
 function searchConversations(searchTerm, type = null) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const convSheet = ss.getSheetByName(SHEET_NAMES.CONVERSATIONS);
-  const data = convSheet.getRange(2, 1, convSheet.getLastRow() - 1, 8).getValues();
+  const lastRow = convSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? convSheet.getRange(2, 1, rowCount, 8).getValues() : [];
 
   const results = data.filter(row => {
     const contentMatch = row[4].toLowerCase().includes(searchTerm.toLowerCase());
@@ -214,7 +226,9 @@ function searchConversations(searchTerm, type = null) {
 function likeConversation(conversationId) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const convSheet = ss.getSheetByName(SHEET_NAMES.CONVERSATIONS);
-  const data = convSheet.getRange(2, 1, convSheet.getLastRow() - 1, 8).getValues();
+  const lastRow = convSheet.getLastRow();
+  const rowCount = Math.max(lastRow - 1, 0);
+  const data = rowCount > 0 ? convSheet.getRange(2, 1, rowCount, 8).getValues() : [];
 
   const rowIndex = data.findIndex(row => row[0] === conversationId);
   if (rowIndex !== -1) {
