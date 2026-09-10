@@ -144,7 +144,8 @@ clasp deploy
 ├── index.html           # メインUI（HTML）
 ├── styles.html          # スタイル（CSS）
 ├── script.html          # クライアントスクリプト（JavaScript）
-└── README.md            # このファイル
+├── README.md            # このファイル
+└── product-definitions/ # 製品定義書（QAボット・社内教育用データ）→ product-definitions/README.md
 ```
 
 ## Google Sheets 構造 / Google Sheets Structure

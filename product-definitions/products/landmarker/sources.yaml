@@ -1,0 +1,42 @@
+product_id: landmarker
+sources:
+  - id: S1
+    title: LANDmarkerよくあるお問い合わせ集
+    drive_file_id: 1z44NDXVi42XQHQ8uclVrKPDCqWXUkrY-skaHSwqvM7U
+    mime: application/vnd.google-apps.document
+    doc_type: faq
+    version: 2026-09-10 時点
+    issued: 2026-09-02
+    notes: iCAT マーケティング部門作成。大分類 1〜5・中分類 1〜13 の構成。
+  - id: S2
+    title: Landmark Guide マルチガイド取扱説明書（LandmarkGuide_manual.pdf）
+    drive_file_id: 1tv0NhQSQVqwgOKbuC9606UyuVDljwRKc
+    mime: application/pdf
+    doc_type: manual
+    version: 2015-01-14 初版（キット内訳は 2021-06-16 時点）
+    issued: 2015-01-15
+    notes: 滅菌条件、サージカルキット内訳、サイド固定オプションと費用を含む。
+  - id: S3
+    title: iCATデンタルラボラトリー案内（LandmarkCrown.pdf）
+    drive_file_id: 1zLlIOO3q57JPAI_ZUqLoTxr9hpaj9TBk
+    mime: application/pdf
+    doc_type: catalog
+    version: 2020-08-07
+    issued: 2020-08-07
+    notes: データ作成外注メニュー、ガイド 3 タイプ、対応ガイドシステム一覧。
+  - id: S4
+    title: Landmark System 利用約款
+    drive_file_id: 1T3bUkYV3JbxDcyLBs0u98Ltqxjr-iL4K
+    mime: application/pdf
+    doc_type: terms
+    version: 第3版
+    issued: 2016-08-22
+    notes: 契約期間、解約、検収、患者情報の扱い、免責。
+  - id: S5
+    title: Landmark System カタログ（LandmarkSystem.pdf）
+    drive_file_id: 1vNJHWHJoxL5omFD8BhyeDn1R_thJ-LWJ
+    mime: application/pdf
+    doc_type: catalog
+    version: 2021-01-14 更新
+    issued: null
+    notes: テキスト抽出不可（画像PDF）。ラインナップ名「スタンダード／ミニマム／＋CADワックスアップ」のみ判読。

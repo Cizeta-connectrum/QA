@@ -1,0 +1,11 @@
+# この製品が参照した Google Drive ファイル
+# id は本文の出典ラベル [S1] に対応
+sources:
+  - id: S1
+    title: 
+    drive_file_id: 
+    mime: application/pdf
+    doc_type: catalog        # catalog / manual / faq / terms / spec / minutes / other
+    version: 
+    issued: 
+    notes: 

@@ -1,0 +1,41 @@
+# Google Drive ソース台帳（全製品共通）
+# 追加時は products/<id>/sources.yaml にも同じ drive_file_id を登録する
+sources:
+  - drive_file_id: 1z44NDXVi42XQHQ8uclVrKPDCqWXUkrY-skaHSwqvM7U
+    title: LANDmarkerよくあるお問い合わせ集
+    mime: application/vnd.google-apps.document
+    product: landmarker
+    doc_type: faq
+    last_synced: 2026-09-10
+  - drive_file_id: 1tv0NhQSQVqwgOKbuC9606UyuVDljwRKc
+    title: LandmarkGuide_manual.pdf（マルチガイド取扱説明書）
+    mime: application/pdf
+    product: landmarker
+    doc_type: manual
+    last_synced: 2026-09-10
+  - drive_file_id: 1zLlIOO3q57JPAI_ZUqLoTxr9hpaj9TBk
+    title: LandmarkCrown.pdf（iCATデンタルラボラトリー案内）
+    mime: application/pdf
+    product: landmarker
+    doc_type: catalog
+    last_synced: 2026-09-10
+  - drive_file_id: 1T3bUkYV3JbxDcyLBs0u98Ltqxjr-iL4K
+    title: Landmarksystem利用約款.pdf
+    mime: application/pdf
+    product: landmarker
+    doc_type: terms
+    last_synced: 2026-09-10
+  - drive_file_id: 1vNJHWHJoxL5omFD8BhyeDn1R_thJ-LWJ
+    title: LandmarkSystem.pdf（システムカタログ）
+    mime: application/pdf
+    product: landmarker
+    doc_type: catalog
+    last_synced: 2026-09-10
+    notes: 画像主体のPDFでテキスト抽出がほぼ不可。OCR または手入力が必要。
+  - drive_file_id: 1ikxF1c6nbwsR4cwO5EVu__w2WzOxXSqu
+    title: 使用許諾契約書.pdf
+    mime: application/pdf
+    product: landmarker
+    doc_type: terms
+    last_synced: null
+    notes: 未読み込み。第7章に反映予定。
