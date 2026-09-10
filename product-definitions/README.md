@@ -49,3 +49,4 @@ product-definitions/
 | product-id | 製品名 | 状態 |
 |---|---|---|
 | `landmarker` | LANDmarker / Landmark System（株式会社アイキャット） | 初版 |
+| `drclear` | Dr.Clear（クリア医療器械技術・常州 / Bondent Group。日本は試験販売段階） | 初版 |

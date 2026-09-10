@@ -1,0 +1,82 @@
+product_id: drclear
+sources:
+  - id: S1
+    title: 日本語版クリア商品紹介に関して（Bondent Group 製品紹介スライド）
+    drive_file_id: 1Z1N7OclZ4Jk18buX0Fe6oTDldIhwaqBm
+    mime: application/vnd.openxmlformats-officedocument.presentationml.presentation
+    doc_type: catalog
+    version: 2024 年版（© 2024 Dr. Clear Aligner）
+    issued: 2025-12-09（Drive 登録日）
+    notes: C3/C4 ラインナップ、3 層シート、骨格システム、GroForce/BalanForce、装置分類（D1〜D11 等）。機械翻訳由来の表記ゆれあり。
+  - id: S2
+    title: Dr.Clear(with Ivan)MTG_260702（GroForce / BalanForce 技術レクチャー議事録）
+    drive_file_id: 1hFPU3PDpqebzOy21HqtW7LR2JZd74zBza0cnm4jKJ7s
+    mime: application/vnd.google-apps.document
+    doc_type: minutes
+    version: 2026-07-02
+    issued: 2026-07-02
+    notes: GroForce の AI 分類（5 パターン・3 分）、BalanForce の 3 要素、日本向け説明方針。
+  - id: S3
+    title: Dr.Clear MTG_260723（来日ミーティング議事録）
+    drive_file_id: 1tbUlfAj9nxfmvO3mjSj9BRe-pK9KNQaGum3HIwK7sLM
+    mime: application/vnd.google-apps.document
+    doc_type: minutes
+    version: 2026-07-23
+    issued: 2026-07-24
+    notes: 使用シート材料（Bay Materials Zendura、Coherz）、競合のシート、ISO 13485 スコープ、送料・手数料方針、WorkBench アカウント発行方針。
+  - id: S4
+    title: 議事録_DrClear定例MTG_20260827
+    drive_file_id: 1OIG-ga5gozfSqtsXFsJwyZfrWSWYEzmGpOqUTDE0R5g
+    mime: application/vnd.google-apps.document
+    doc_type: minutes
+    version: 2026-08-27
+    issued: 2026-08-27
+    notes: アカウント発行運用、オンボーディング 4 部構成、日本語ローカライズ、ステージ数運用、規制対応目標（2026-10）、契約は覚書で対応。
+  - id: S5
+    title: MTGLOG_Dr.CLEAR（2026-06-18 定例）
+    drive_file_id: 1Sf52dlwg0wWNxJjIL28WYVSdGz974fWBTUcaNXIk7Vw
+    mime: application/vnd.google-apps.document
+    doc_type: minutes
+    version: 2026-06-18
+    issued: 2026-06-18
+    notes: 製造拠点（ソフト＝上海、アライナーとトレーナーは別工場）、シート原材料は外部調達、商標の懸念、治療期間延長オプション検討。
+  - id: S6
+    title: Dr.Clear 薬事申請に伴う技術資料・情報提供依頼書（日本語版）
+    drive_file_id: 1am70Se9bTplziqUm0M4GdVQ1RByZQfmrvDs7hecETQc
+    mime: application/vnd.google-apps.document
+    doc_type: spec
+    version: 2026-06-10
+    issued: 2026-06-10
+    notes: 3 品目の一般的名称・JMDN コード・クラス分類・申請ルート、要求規格一覧。
+  - id: S7
+    title: Dr.Clear 薬事申請実行計画（対面助言・役割分担・詳細コスト）
+    drive_file_id: 1X4LhYn8dRf7YyYX09ataYZHAbzmfmTiLRWkuavlfz-w
+    mime: application/vnd.google-apps.presentation
+    doc_type: other
+    version: 2026-06-04
+    issued: 2026-06-04
+    notes: 社内限。申請ルート別の想定期間。金額は本定義書に転記しない。
+  - id: S8
+    title: Gemini メモ「南さん Dr.Clear」（2026-08-21）
+    drive_file_id: 17zyrAlXDNst2Mmg9rvpeDDApvt3zEkSWHXdnq6pVF7U
+    mime: application/vnd.google-apps.document
+    doc_type: minutes
+    version: 2026-08-21
+    issued: 2026-08-21
+    notes: 薬事申請対象品目の見直し（シートは対象外、ソフト＋トレーナーの 2 品目へ）。
+  - id: S9
+    title: Gemini メモ「Dr.Clear薬事」（2026-09-09）
+    drive_file_id: 1CtqnLBX2elevVpOC3ajHJ8B9EO22s6ulwKMkIxVMrUc
+    mime: application/vnd.google-apps.document
+    doc_type: minutes
+    version: 2026-09-09
+    issued: 2026-09-09
+    notes: 日本国内の選任製造販売業者は iCAT の想定。シートは Coherz 側で日本認証手続き中、現物は日本で流通させない。
+  - id: S10
+    title: Align 社日本特許 vs Dr.Clear 統合調査レポート【改訂 3】
+    drive_file_id: 1-FRNLDYsldR0smwssTnSzl8SOggVaHOp
+    mime: application/pdf
+    doc_type: other
+    version: 改訂 3（2026-06-15）
+    issued: 2026-06-15
+    notes: 注意。調査対象は「Dr.Clear Aligners（シンガポール、2020 年創業）」であり、本定義書の Dr.Clear（中国・常州、Bondent Group）とは別会社。3 層シート特許の一般論のみ参考にする。

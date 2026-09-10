@@ -39,3 +39,80 @@ sources:
     doc_type: terms
     last_synced: null
     notes: 未読み込み。第7章に反映予定。
+  # --- drclear ---
+  - drive_file_id: 1Z1N7OclZ4Jk18buX0Fe6oTDldIhwaqBm
+    title: 日本語版クリア商品紹介に関して拷貝2.pptx
+    mime: application/vnd.openxmlformats-officedocument.presentationml.presentation
+    product: drclear
+    doc_type: catalog
+    last_synced: 2026-09-10
+  - drive_file_id: 1hFPU3PDpqebzOy21HqtW7LR2JZd74zBza0cnm4jKJ7s
+    title: Dr.Clear(with Ivan)MTG_260702
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: minutes
+    last_synced: 2026-09-10
+  - drive_file_id: 1tbUlfAj9nxfmvO3mjSj9BRe-pK9KNQaGum3HIwK7sLM
+    title: Dr.Clear MTG_260723
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: minutes
+    last_synced: 2026-09-10
+  - drive_file_id: 1OIG-ga5gozfSqtsXFsJwyZfrWSWYEzmGpOqUTDE0R5g
+    title: 議事録_DrClear定例MTG_20260827
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: minutes
+    last_synced: 2026-09-10
+  - drive_file_id: 1Sf52dlwg0wWNxJjIL28WYVSdGz974fWBTUcaNXIk7Vw
+    title: MTGLOG_Dr.CLEAR
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: minutes
+    last_synced: 2026-09-10
+  - drive_file_id: 1am70Se9bTplziqUm0M4GdVQ1RByZQfmrvDs7hecETQc
+    title: Dr.Clear 薬事情報提供依頼書 (日本語版)
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: spec
+    last_synced: 2026-09-10
+  - drive_file_id: 1X4LhYn8dRf7YyYX09ataYZHAbzmfmTiLRWkuavlfz-w
+    title: Dr.Clear 薬事申請実行計画（対面助言・役割分担・詳細コスト）
+    mime: application/vnd.google-apps.presentation
+    product: drclear
+    doc_type: other
+    last_synced: 2026-09-10
+    notes: 社内限（予算情報）。定義書には期間のみ反映。
+  - drive_file_id: 17zyrAlXDNst2Mmg9rvpeDDApvt3zEkSWHXdnq6pVF7U
+    title: 南さん　Dr.Clear - 2026/08/21 - Gemini によるメモ
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: minutes
+    last_synced: 2026-09-10
+  - drive_file_id: 1CtqnLBX2elevVpOC3ajHJ8B9EO22s6ulwKMkIxVMrUc
+    title: Dr.Clear薬事 - 2026/09/09 - Gemini によるメモ
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: minutes
+    last_synced: 2026-09-10
+  - drive_file_id: 1-FRNLDYsldR0smwssTnSzl8SOggVaHOp
+    title: Align_DrClear_特許調査レポート.pdf
+    mime: application/pdf
+    product: drclear
+    doc_type: other
+    last_synced: 2026-09-10
+    notes: 対象はシンガポールの同名別会社。参考扱い。
+  - drive_file_id: 1yYbWUk1pTcA-QGuUPykvrd9oG0pTCqP12U6UaVFG-tk
+    title: Align_DrClear_特許対比表
+    mime: application/vnd.google-apps.spreadsheet
+    product: drclear
+    doc_type: other
+    last_synced: 2026-09-10
+    notes: 上記レポートの別添。未反映。
+  - drive_file_id: 10WqLdu5sGzpvFadq2lnVhCBe12d2o7HHJaxNQRUTwpk
+    title: Dr.Clear薬事関連 - 2026/08/21 - Gemini によるメモ
+    mime: application/vnd.google-apps.document
+    product: drclear
+    doc_type: minutes
+    last_synced: null
+    notes: 未反映（長文）。
