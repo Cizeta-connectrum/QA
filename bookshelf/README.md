@@ -12,44 +12,59 @@
 ## 仕組み
 
 ```
-books/ に .epub を入れてコミット
-        ↓  GitHub Actions が自動で実行（1〜2分）
+GitHub（非公開リポジトリ）の books/ に .epub を入れてコミット
+        ↓  Cloudflare Pages が自動でビルド（1〜2分）
 表紙・タイトルを取り出して本棚を作成
         ↓
-GitHub Pages の「秘密のURL」に公開
-https://<アカウント名>.github.io/<リポジトリ名>/<秘密の文字列>/
+秘密のURLに公開
+https://<プロジェクト名>.pages.dev/<秘密の文字列>/
 ```
 
 公開されるのは、推測できない長い文字列のURLだけです。それ以外のURLでは何も表示されず、検索エンジンにも載りません。
 URLを知っている人はログインなしで読めます。
 
-> **ご注意**：本のファイルは、リポジトリを見られる人には見えてしまいます。リポジトリは必ず **Private（非公開）** にしてください。
+> **ご注意**
+> - 本のファイルは、リポジトリを見られる人には見えてしまいます。リポジトリは必ず **Private（非公開）** にしてください。
+> - Cloudflare Pages に置けるのは **1ファイル25MBまで** です。それより大きい .epub は公開されません（ビルドのログに警告が出ます）。
 
 ## 最初の設定（1回だけ）
 
-1. **リポジトリを作る**
-   GitHubで新しいリポジトリを **Private** で作り、このフォルダの中身（`app/`、`books/`、`scripts/`、`.github/`、`README.md`）を入れます。
+### 1. GitHub に非公開リポジトリを作る
+新しいリポジトリを **Private** で作り、このフォルダの中身（`app/`、`books/`、`scripts/`、`README.md`、`.gitignore`）を入れます。
 
-2. **秘密の文字列を登録する**
-   リポジトリの **Settings → Secrets and variables → Actions → New repository secret** を開き、次のとおり登録します。
-   - Name：`READER_PATH`
-   - Secret：英数字で16文字以上のランダムな文字列（例：`k7Qm2xVb9PzR4tLw8NcY`）
+### 2. Cloudflare Pages とつなぐ
+1. [Cloudflare](https://dash.cloudflare.com/sign-up) に無料で登録してログインします。
+2. 左のメニューの **Workers & Pages**（「コンピューティング」の中にある場合もあります）→ **作成（Create）** を押します。
+3. **Pages** を選び、**Git リポジトリをインポート（Import an existing Git repository / Connect to Git）** を選びます。
+4. GitHub との連携を求められたら許可します。そのとき、読み取りを許すリポジトリは **このリポジトリだけ（Only select repositories）** にするのがおすすめです。
+5. リポジトリを選び、次のとおり設定します。
 
-   この文字列がURLの一部になります。URLを変えたいとき（読める人を入れ替えたいとき）は、この値を変えて再実行してください。
+| 項目 | 設定する値 |
+|---|---|
+| プロジェクト名 | 好きな名前（URLの `〇〇.pages.dev` になります） |
+| 本番ブランチ（Production branch） | `main` |
+| フレームワーク プリセット | なし（None） |
+| ビルド コマンド | `bash scripts/cf-build.sh` |
+| ビルド出力ディレクトリ | `_site` |
+| 環境変数（Environment variables） | 名前 `READER_PATH`、値は英数字16文字以上のランダムな文字列（例：`k7Qm2xVb9PzR4tLw8NcY`） |
 
-3. **GitHub Pages を有効にする**
-   **Settings → Pages → Build and deployment → Source** で **GitHub Actions** を選びます。
+6. **保存してデプロイ（Save and Deploy）** を押します。1〜2分で完了します。
 
-4. **初回の公開**
-   **Actions** タブの「本棚を公開」で **Run workflow** を押します。緑のチェックがつけば完了です。
+### 3. URLを開く
+`https://<プロジェクト名>.pages.dev/<READER_PATH の値>/`
+（例：`https://my-books.pages.dev/k7Qm2xVb9PzR4tLw8NcY/`）
 
-5. **URLを開く**
-   `https://<アカウント名>.github.io/<リポジトリ名>/<READER_PATH の値>/`
-   （例：`https://example.github.io/books/k7Qm2xVb9PzR4tLw8NcY/`）
+このURLを、読んでもらいたい人に伝えてください。
+
+### URLを変えたいとき（読める人を入れ替えたいとき）
+Cloudflare のプロジェクトの **設定 → 変数とシークレット** で `READER_PATH` の値を変えます。そのあと **デプロイ** タブで最新のデプロイを **再試行（Retry deployment）** します。古いURLは使えなくなります。
+
+### もっと厳しく制限したいとき（任意）
+Cloudflare の **Zero Trust → Access** を使うと、登録したメールアドレスの人だけがログインして読めるようにできます（50人まで無料）。
 
 ## 本の追加・削除
 
-- **追加**：GitHubでリポジトリの `books` フォルダを開き、**Add file → Upload files** で `.epub` をドラッグして **Commit changes** を押します。1〜2分で本棚に並びます。
+- **追加**：GitHubでリポジトリの `books` フォルダを開き、**Add file → Upload files** で `.epub` をドラッグして **Commit changes** を押します。Cloudflare が自動でビルドし、1〜2分で本棚に並びます。
 - **削除**：GitHub上でファイルを開き、ゴミ箱アイコンで削除してコミットします。
 - **棚を分ける**：`books/小説/〇〇.epub` のようにフォルダに入れると、棚が分かれます。
 - **本を差し替える**：同じ名前のファイルをアップロードし直すと更新されます。
@@ -63,12 +78,11 @@ URLを知っている人はログインなしで読めます。
 ## 手元で試す
 
 ```bash
-pip install pillow
-python scripts/build.py _site_reader
-cd _site_reader && python -m http.server 8000
+READER_PATH=test1234567890abcd bash scripts/cf-build.sh
+cd _site && python -m http.server 8000
 ```
 
-ブラウザで http://localhost:8000/ を開きます。
+ブラウザで http://localhost:8000/test1234567890abcd/ を開きます。
 
 ## ファイル構成
 
@@ -78,4 +92,4 @@ cd _site_reader && python -m http.server 8000
 | `app/index.html` | 読書アプリ本体（[epub.js](https://github.com/futurepress/epub.js) を使用） |
 | `app/manifest.webmanifest`、`app/*.png` | ホーム画面用のアイコンと設定 |
 | `scripts/build.py` | `books/` から本の一覧（`books.json`）と表紙画像を作る |
-| `.github/workflows/deploy.yml` | プッシュするたびに自動で組み立てて GitHub Pages に公開 |
+| `scripts/cf-build.sh` | Cloudflare Pages のビルドコマンド（秘密のURLの下に組み立てる） |

@@ -21,6 +21,8 @@ from urllib.parse import unquote
 ROOT = Path(__file__).resolve().parent.parent
 BOOKS_DIR = ROOT / "books"
 APP_DIR = ROOT / "app"
+# Cloudflare Pages は1ファイル25MiBまで
+MAX_BYTES = 25 * 1024 * 1024
 
 try:
     from PIL import Image
@@ -118,6 +120,9 @@ def main():
         if not path.is_file() or path.suffix.lower() != ".epub":
             continue
         rel = path.relative_to(BOOKS_DIR).as_posix()
+        if path.stat().st_size > MAX_BYTES:
+            print(f"警告: {rel} は25MBを超えているため公開できません（スキップしました）", file=sys.stderr)
+            continue
         digest = hashlib.sha1(path.read_bytes()).hexdigest()[:12]
         book_id = hashlib.sha1(rel.encode("utf-8")).hexdigest()[:10]
         folder = path.parent.relative_to(BOOKS_DIR).as_posix()
